@@ -15,7 +15,7 @@
                     viewBox="0 0 24 24"
                     xmlns="http://www.w3.org/2000/svg"
                     aria-hidden="true"
-                    @click="$emit('close')"
+                    @click="$emit('handleForm', 'none')"
                 >
                     <path
                         stroke-linecap="round"
@@ -24,7 +24,8 @@
                     ></path>
                 </svg>
             </div>
-            <form class="space-y-4 md:space-y-5 px-16" action="#">
+            <form class="space-y-3 md:space-y-3 px-16" @submit.prevent="loginUser">
+                <input type="text" name="hidden-username" autocomplete="username" hidden />
                 <div>
                     <label
                         for="username"
@@ -32,11 +33,14 @@
                         >Username</label
                     >
                     <input
-                        type="username"
-                        name="username"
                         v-model="username"
-                        class="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-info-content dark:border-zinc-700 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                        placeholder="username"
+                        type="text"
+                        name="username"
+                        id="username"
+                        class="bg-info-content border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-info-content dark:border-zinc-700 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                        placeholder="Username"
+                        autocomplete="username"
+                        required
                     />
                 </div>
                 <div>
@@ -46,20 +50,26 @@
                         >Password</label
                     >
                     <input
+                        v-model="password"
                         type="password"
                         name="password"
-                        v-model="password"
+                        id="password"
                         placeholder="••••••••"
                         autocomplete="new-password"
-                        class="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-info-content dark:border-zinc-700 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                        class="bg-info-content border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-info-content dark:border-zinc-700 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                        required
                     />
                 </div>
                 <div class="flex items-center justify-between">
                     <div class="flex items-start">
                         <div class="flex items-center h-5">
-                            <input type="checkbox" class="w-4 h-4 rounded checkbox" />
+                            <input
+                                type="checkbox"
+                                id="remember"
+                                class="w-4 h-4 border border-gray-300 rounded bg-info-50 focus:ring-3 focus:ring-primary-300 dark:bg-gray-700 dark:border-gray-600 dark:focus:ring-primary-600 dark:ring-offset-gray-800"
+                            />
                         </div>
-                        <div class="ml-2 text-sm">
+                        <div class="ml-3 text-sm">
                             <label for="remember" class="text-gray-500 dark:text-gray-300"
                                 >Remember me</label
                             >
@@ -75,7 +85,6 @@
                     type="submit"
                     class="w-full btn btn-outline text-white bg-primary-600 hover:bg-primary-700 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
                     :disabled="!username || !password"
-                    @click="loginUser"
                 >
                     Login
                 </button>
@@ -84,40 +93,81 @@
                     <a
                         href="#"
                         class="font-medium text-primary-600 hover:underline dark:text-primary-500"
-                        >Sign up</a
+                        @click="$emit('handleForm', 'register')"
+                        >Register now</a
                     >
                 </p>
+                <div
+                    role="alert"
+                    class="alert"
+                    :class="{
+                        'alert-error': messageType === 'error',
+                        'alert-success': messageType === 'success'
+                    }"
+                    v-if="message"
+                >
+                    <svg
+                        v-if="messageType === 'error'"
+                        xmlns="http://www.w3.org/2000/svg"
+                        class="stroke-current shrink-0 h-6 w-6"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                    >
+                        <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            stroke-width="2"
+                            d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"
+                        />
+                    </svg>
+                    <svg
+                        v-else
+                        xmlns="http://www.w3.org/2000/svg"
+                        class="stroke-current shrink-0 h-6 w-6"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                    >
+                        <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            stroke-width="2"
+                            d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+                        />
+                    </svg>
+                    <span>{{ message }}</span>
+                </div>
             </form>
         </div>
     </div>
 </template>
 
 <script lang="ts" setup>
-import { ref } from 'vue'
+import { ref, defineEmits } from 'vue'
+import { useRouter } from 'vue-router'
 import { login } from '../../services/authService'
+
+const emit = defineEmits(['handleForm'])
+const router = useRouter()
 
 const username = ref('')
 const password = ref('')
-const passwordVisible = ref(false)
 const message = ref('')
 const messageType = ref<'success' | 'error'>('success')
 
 const loginUser = async () => {
-    console.log(username.value, password.value)
     try {
-        console.log(username.value, password.value)
         const response = await login(username.value, password.value)
-        // messageType.value = 'success'
-        // message.value = 'Login successful'
-        // Store token in localStorage or a state management store
+
+        messageType.value = 'success'
+        message.value = 'Login successful'
+
         localStorage.setItem('token', response.token)
+        router.push('/home')
     } catch (error: any) {
         messageType.value = 'error'
-        message.value = error.response.data.message || 'Error logging in'
+        message.value = `Error! ${error.response.data.message}` || 'Error logging in'
     }
 }
-
-const close = () => {}
 </script>
 
 <style scoped>

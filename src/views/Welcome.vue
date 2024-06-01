@@ -25,23 +25,40 @@
         </div>
     </div>
 
-    <TransitionGroup>
-        <Login v-if="visible.login" @close="handleForm('none')" />
-        <Register v-if="visible.register" @close="handleForm('none')" />
-    </TransitionGroup>
+    <!-- <TransitionGroup> -->
+    <Login v-if="visible.login" @handleForm="handleForm" />
+    <Register v-if="visible.register" @handleForm="handleForm" />
+    <!-- </TransitionGroup> -->
 </template>
 
 <script setup lang="ts">
-import { reactive } from 'vue'
+import { reactive, onMounted } from 'vue'
+import { useRouter } from 'vue-router'
+import { authenticateToken } from '../services/protectedService'
+
 import Login from '../components/Auth/Login.vue'
 import Register from '../components/Auth/Register.vue'
 
-type FormType = 'login' | 'register' | 'none'
-
+const router = useRouter()
 const visible = reactive({
-    login: true,
+    login: false,
     register: false
 })
+
+const autoLogin = async () => {
+    try {
+        await authenticateToken()
+        router.push('/home')
+    } catch (error) {
+        // console.log('Token invalid or expired', error)
+    }
+}
+
+onMounted(() => {
+    autoLogin()
+})
+
+type FormType = 'login' | 'register' | 'none'
 
 const handleForm = (form: FormType) => {
     visible.login = form === 'login'
