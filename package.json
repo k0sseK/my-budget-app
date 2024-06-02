@@ -6,7 +6,7 @@
     "scripts": {
         "serve": "concurrently \"pnpm dev:server\" \"pnpm dev\" --raw",
         "dev": "vite",
-        "dev:server": "ts-node-dev server/server.ts",
+        "dev:server": "npx ts-node server/src/server.ts",
         "build": "run-p type-check \"build-only {@}\" --",
         "preview": "vite preview",
         "test:unit": "vitest",
