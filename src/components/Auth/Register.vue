@@ -126,6 +126,7 @@
                         "
                     >
                         Register
+                        <span class="loading loading-spinner loading-xs" v-if="loading"></span>
                     </button>
                     <div
                         role="alert"
@@ -187,6 +188,8 @@ const passwordConfirmation = ref('')
 const message = ref('')
 const messageType = ref<'success' | 'error'>('success')
 
+const loading = ref(false)
+
 const isValidEmail = () => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
     return emailRegex.test(email.value)
@@ -198,12 +201,16 @@ const isValidPassword = () => {
 
 const registerUser = async () => {
     try {
+        loading.value = true
+
         const response = await register(username.value, email.value, password.value)
         messageType.value = 'success'
         message.value = response.message
 
         router.push('/home')
     } catch (error: any) {
+        loading.value = false
+
         messageType.value = 'error'
         message.value = error.response.data.message || 'Error registering user'
     }

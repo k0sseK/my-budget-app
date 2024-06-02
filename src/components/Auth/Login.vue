@@ -87,7 +87,7 @@
                         class="w-full btn btn-outline text-white bg-primary-600 hover:bg-primary-700 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
                         :disabled="!username || !password"
                     >
-                        Login
+                        Login<span class="loading loading-spinner loading-xs" v-if="loading"></span>
                     </button>
                     <p class="text-sm font-light text-gray-500 dark:text-gray-400">
                         Don’t have an account yet?
@@ -156,8 +156,12 @@ const password = ref('')
 const message = ref('')
 const messageType = ref<'success' | 'error'>('success')
 
+const loading = ref(false)
+
 const loginUser = async () => {
     try {
+        loading.value = true
+
         const response = await login(username.value, password.value)
 
         messageType.value = 'success'
@@ -166,6 +170,8 @@ const loginUser = async () => {
         localStorage.setItem('token', response.token)
         router.push('/home')
     } catch (error: any) {
+        loading.value = false
+
         messageType.value = 'error'
         message.value = `Error! ${error.response.data.message}` || 'Error logging in'
     }
