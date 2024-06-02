@@ -1,4 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router'
+import { authenticateToken } from '../services/protectedService'
 
 import Welcome from '@/views/Welcome.vue'
 
@@ -7,24 +8,37 @@ const router = createRouter({
     routes: [
         {
             path: '/',
-            name: 'welcome',
+            name: 'Welcome',
+            meta: { verifyAuth: true },
             component: Welcome
         },
         {
             path: '/home',
-            name: 'home',
-            meta: { requiresAuth: true },
-            component: () => import('../views/Home.vue')
+            name: 'Home',
+            meta: { verifyAuth: true },
+            component: () => import('@/views/Home.vue')
         }
     ]
 })
 
-router.beforeEach((to, from, next) => {
-    const requiresAuth = to.matched.some((record) => record.meta.requiresAuth)
-    const token = localStorage.getItem('token')
+router.beforeEach(async (to, from, next) => {
+    const verifyAuth = to.matched.some((record) => record.meta.verifyAuth)
 
-    if (requiresAuth && !token) {
-        next('/')
+    const isAuthenticated = async () => {
+        try {
+            await authenticateToken()
+            return true
+        } catch (error) {
+            return false
+        }
+    }
+
+    if (verifyAuth) {
+        if (await isAuthenticated()) {
+            to.path === '/' ? next('/home') : next()
+        } else {
+            to.path === '/' ? next() : next('/')
+        }
     } else {
         next()
     }
