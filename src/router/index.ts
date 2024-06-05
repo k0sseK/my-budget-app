@@ -1,7 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import { authenticateToken } from '../services/protectedService'
 
-import Welcome from '@/views/Welcome.vue'
+import Welcome from '@/views/WelcomeView.vue'
 
 const router = createRouter({
     history: createWebHistory(import.meta.env.BASE_URL),
@@ -13,10 +13,21 @@ const router = createRouter({
             component: Welcome
         },
         {
-            path: '/home',
-            name: 'Home',
+            path: '/summary',
+            name: 'Summary',
             meta: { verifyAuth: true },
-            component: () => import('@/views/Home.vue')
+            component: () => import('@/views/SummaryView.vue')
+        },
+        {
+            path: '/transactions',
+            name: 'Transactions',
+            meta: { verifyAuth: true },
+            component: () => import('@/views/TransactionsView.vue')
+        },
+        {
+            path: '/:pathMatch(.*)*',
+            name: 'NotFound',
+            component: () => import('@/views/NotFoundView.vue')
         }
     ]
 })
@@ -35,7 +46,7 @@ router.beforeEach(async (to, from, next) => {
 
     if (verifyAuth) {
         if (await isAuthenticated()) {
-            to.path === '/' ? next('/home') : next()
+            to.path === '/' ? next('/summary') : next()
         } else {
             to.path === '/' ? next() : next('/')
         }

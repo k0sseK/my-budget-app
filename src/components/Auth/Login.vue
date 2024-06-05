@@ -168,7 +168,7 @@ const loginUser = async () => {
         message.value = 'Login successful'
 
         localStorage.setItem('token', response.token)
-        router.push('/home')
+        router.push('/summary')
     } catch (error: any) {
         loading.value = false
 

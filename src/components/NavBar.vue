@@ -6,9 +6,15 @@
             </div>
             <div class="navbar-center hidden lg:flex">
                 <ul class="menu menu-horizontal px-1 space-x-1">
-                    <li class="text-accent bg-neutral rounded-lg"><a>Summary</a></li>
-                    <li><a>Transactions</a></li>
-                    <li><a>Wallets</a></li>
+                    <li :class="isActive('Summary')" @click="navigateTo('/summary')">
+                        <a>Summary</a>
+                    </li>
+                    <li :class="isActive('Transactions')" @click="navigateTo('/transactions')">
+                        <a>Transactions</a>
+                    </li>
+                    <li :class="isActive('Wallets')" @click="navigateTo('/wallets')">
+                        <a>Wallets</a>
+                    </li>
                 </ul>
             </div>
             <div class="navbar-end">
@@ -38,13 +44,22 @@
 </template>
 
 <script setup lang="ts">
-import { useRouter } from 'vue-router'
+import { useRouter, useRoute } from 'vue-router'
 import { logout } from '../services/authService'
 
 const router = useRouter()
+const route = useRoute()
 
 const logoutUser = () => {
     logout()
     router.push('/')
+}
+
+const navigateTo = (path: string) => {
+    router.push(path)
+}
+
+const isActive = (name: string) => {
+    return route.name === name ? 'text-accent bg-neutral rounded-lg' : ''
 }
 </script>

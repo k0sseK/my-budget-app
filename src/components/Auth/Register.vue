@@ -207,7 +207,7 @@ const registerUser = async () => {
         messageType.value = 'success'
         message.value = response.message
 
-        router.push('/home')
+        router.push('/summary')
     } catch (error: any) {
         loading.value = false
 
