@@ -65,6 +65,7 @@
                         <div class="flex items-start">
                             <div class="flex items-center h-5">
                                 <input
+                                    v-model="remember"
                                     type="checkbox"
                                     id="remember"
                                     class="w-4 h-4 border border-gray-300 rounded bg-info-50 focus:ring-3 focus:ring-primary-300 dark:bg-gray-700 dark:border-gray-600 dark:focus:ring-primary-600 dark:ring-offset-gray-800"
@@ -144,7 +145,7 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, defineEmits } from 'vue'
+import { ref, defineEmits, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { login } from '../../services/authService'
 
@@ -153,6 +154,7 @@ const router = useRouter()
 
 const username = ref('')
 const password = ref('')
+const remember = ref(false)
 const message = ref('')
 const messageType = ref<'success' | 'error'>('success')
 
@@ -168,6 +170,15 @@ const loginUser = async () => {
         message.value = 'Login successful'
 
         localStorage.setItem('token', response.token)
+
+        if (remember.value) {
+            localStorage.setItem('username', username.value)
+            localStorage.setItem('password', password.value)
+        } else {
+            localStorage.removeItem('username')
+            localStorage.removeItem('password')
+        }
+
         router.push('/summary')
     } catch (error: any) {
         loading.value = false
@@ -176,6 +187,17 @@ const loginUser = async () => {
         message.value = `Error! ${error.response.data.message}` || 'Error logging in'
     }
 }
+
+onMounted(() => {
+    const storedUsername = localStorage.getItem('username')
+    const storedPassword = localStorage.getItem('password')
+
+    if (storedUsername && storedPassword) {
+        username.value = storedUsername
+        password.value = storedPassword
+        remember.value = true
+    }
+})
 </script>
 
 <style scoped>
