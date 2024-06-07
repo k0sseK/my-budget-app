@@ -1,8 +1,8 @@
 <template>
-    <div class="absolute top-0 left-0 w-full">
-        <div class="navbar bg-base-100">
+    <div class="bg-background/10 fixed w-full bg-base-100 mb-10 z-[999]">
+        <div class="navbar mx-auto max-w-7xl">
             <div class="navbar-start">
-                <a class="btn btn-ghost text-xl">Budget Manager</a>
+                <a class="text-xl">Budget<span class="font-bold">Manager</span></a>
             </div>
             <div class="navbar-center hidden lg:flex">
                 <ul class="menu menu-horizontal px-1 space-x-1">
