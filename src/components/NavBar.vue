@@ -1,5 +1,5 @@
 <template>
-    <div class="bg-background/10 fixed w-full bg-base-100 mb-10 z-[999]">
+    <div class="bg-background/10 absolute w-full bg-base-100 mb-10 z-[999]">
         <div class="navbar mx-auto max-w-7xl">
             <div class="navbar-start">
                 <a class="text-xl">Budget<span class="font-bold">Manager</span></a>

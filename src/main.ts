@@ -1,5 +1,4 @@
 import './assets/css/main.css'
-import './assets/css/tailwind.css'
 import 'aos/dist/aos.css'
 
 import AOS from 'aos'
