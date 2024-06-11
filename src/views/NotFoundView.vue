@@ -1,5 +1,5 @@
 <template>
-    <div class="not-found">
+    <div class="absolute top-1/2 left-1/2 translate-x-[-50%] translate-y-[-50%] text-center">
         <h1
             class="text-9xl font-bold bg-gradient-to-r from-[#11998e] to-[#38ef7d] inline-block text-transparent bg-clip-text"
         >
@@ -14,10 +14,3 @@
         </button>
     </div>
 </template>
-
-<style scoped>
-.not-found {
-    text-align: center;
-    margin-top: 50px;
-}
-</style>
