@@ -145,7 +145,7 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, defineEmits, onMounted } from 'vue'
+import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { login } from '../../services/authService'
 

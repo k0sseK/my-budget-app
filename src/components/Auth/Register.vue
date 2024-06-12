@@ -174,7 +174,7 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, defineEmits } from 'vue'
+import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { register } from '../../services/authService'
 
