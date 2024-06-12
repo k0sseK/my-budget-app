@@ -139,8 +139,8 @@
 </template>
 
 <script setup lang="ts">
-import TabLayout from '@/components/TabLayout.vue'
-import TabTitle from '@/components/TabTitle.vue'
+import TabLayout from '@/components/Tab/TabLayout.vue'
+import TabTitle from '@/components/Tab/TabTitle.vue'
 
 import BarChart from '@/components/BarChart.vue'
 import SummaryStats from '@/components/Summary/SummaryStats.vue'
