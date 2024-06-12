@@ -31,7 +31,11 @@ export const createUser = async (user: User) => {
         'INSERT INTO users (username, email, password) VALUES (?, ?, ?)',
         [user.username, user.email, user.password]
     )
-    return rows
+
+    return {
+        id: (rows as any).insertId,
+        ...user
+    }
 }
 
 export const findUserByUsername = async (username: string): Promise<User | null> => {

@@ -1,5 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import { authenticateToken } from '../services/protectedService'
+import { verifyToken } from '../services/authService'
 
 import Welcome from '@/views/WelcomeView.vue'
 
@@ -43,7 +43,7 @@ router.beforeEach(async (to, from, next) => {
 
     const isAuthenticated = async () => {
         try {
-            await authenticateToken()
+            await verifyToken()
             return true
         } catch (error) {
             return false

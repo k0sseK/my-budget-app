@@ -6,7 +6,7 @@ interface CustomRequest extends Request {
     user?: string | object
 }
 
-export const authenticateToken = (req: CustomRequest, res: Response, next: NextFunction) => {
+export const verifyToken = (req: CustomRequest, res: Response, next: NextFunction) => {
     const token = req.header('Authorization')?.split(' ')[1]
 
     if (!token) {

@@ -15,8 +15,16 @@ export const register = async (req: Request, res: Response) => {
     }
 
     try {
-        await createUser(newUser)
-        res.status(201).json({ message: 'User registered successfully' })
+        const user = await createUser(newUser)
+        const token = jwt.sign(
+            { id: user.id, username: user.username, email: user.email },
+            secretKey,
+            {
+                expiresIn: '3h'
+            }
+        )
+
+        res.status(201).json({ token, message: 'User registered successfully' })
     } catch (error: any) {
         res.status(400).json({ message: error.message })
     }
@@ -35,6 +43,8 @@ export const login = async (req: Request, res: Response) => {
         return res.status(400).json({ message: 'Invalid password' })
     }
 
-    const token = jwt.sign({ id: user.id, username: user.username }, secretKey, { expiresIn: '1h' })
+    const token = jwt.sign({ id: user.id, username: user.username, email: user.email }, secretKey, {
+        expiresIn: '3h'
+    })
     res.json({ token })
 }

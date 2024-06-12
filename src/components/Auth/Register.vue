@@ -207,6 +207,7 @@ const registerUser = async () => {
         messageType.value = 'success'
         message.value = response.message
 
+        localStorage.setItem('token', response.token)
         router.push('/summary')
     } catch (error: any) {
         loading.value = false

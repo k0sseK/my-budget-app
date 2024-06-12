@@ -32,3 +32,18 @@ export const login = async (username: string, password: string) => {
 export const logout = () => {
     localStorage.removeItem('token')
 }
+
+export const verifyToken = async () => {
+    try {
+        const token = localStorage.getItem('token')
+        const response = await axios.get(`${API_URL}/verifyToken`, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        })
+
+        return response.data
+    } catch (error) {
+        throw error
+    }
+}
