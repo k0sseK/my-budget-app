@@ -1,6 +1,5 @@
 <template>
-    <NavBar />
-    <div class="relative top-24 w-full max-w-7xl mx-auto p-2 space-y-6">
+    <TabLayout>
         <TabTitle
             title="Summary"
             description="The analytical tools in this tab allow you to identify spending trends, helping you better understand financial patterns and make informed budgeting decisions."
@@ -136,12 +135,13 @@
             </div>
             <BarChart />
         </div>
-    </div>
+    </TabLayout>
 </template>
 
 <script setup lang="ts">
-import NavBar from '@/components/NavBar.vue'
+import TabLayout from '@/components/TabLayout.vue'
 import TabTitle from '@/components/TabTitle.vue'
+
 import BarChart from '@/components/BarChart.vue'
 import SummaryStats from '@/components/Summary/SummaryStats.vue'
 </script>
