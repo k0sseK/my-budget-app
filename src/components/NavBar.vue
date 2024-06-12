@@ -15,8 +15,8 @@
                     <li :class="isActive('Wallets')" @click="navigateTo('/wallets')">
                         <a>Wallets</a>
                     </li>
-                    <li :class="isActive('Planner')" @click="navigateTo('/planner')">
-                        <a>Planner</a>
+                    <li :class="isActive('Budgets')" @click="navigateTo('/budgets')">
+                        <a>Budgets</a>
                     </li>
                 </ul>
             </div>
