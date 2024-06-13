@@ -56,6 +56,7 @@
                 </div>
                 <div
                     class="absolute bottom-4 right-4 flex space-x-1 justify-end items-center cursor-pointer"
+                    onclick="addWallet.showModal()"
                 >
                     <span class="text-accent">Add wallet</span>
                     <svg
@@ -71,6 +72,61 @@
                         ></path>
                     </svg>
                 </div>
+                <dialog id="addWallet" class="modal">
+                    <div class="modal-box w-[28rem] overflow-hidden">
+                        <h3 class="font-bold text-xl">Add Virtual Wallet</h3>
+                        <div class="py-6 space-y-3">
+                            <div>
+                                <label for="name" class="block mb-2 text-sm font-medium"
+                                    >Name</label
+                                >
+                                <input
+                                    type="text"
+                                    placeholder="Name"
+                                    v-model="name"
+                                    class="input input-bordered w-full"
+                                />
+                            </div>
+                            <div>
+                                <label for="balance" class="block mb-2 text-sm font-medium"
+                                    >Balance</label
+                                >
+                                <input
+                                    type="text"
+                                    placeholder="0,00"
+                                    class="input input-bordered w-full"
+                                    v-model="balance"
+                                    @input="formatBalance"
+                                />
+                                <div class="dropdown dropdown-end absolute right-6">
+                                    <div
+                                        tabindex="0"
+                                        role="button"
+                                        class="w-20 btn btn-active btn-ghost"
+                                    >
+                                        {{ currency }}
+                                    </div>
+                                    <ul
+                                        tabindex="0"
+                                        class="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-52"
+                                    >
+                                        <li @click="setCurrency('USD')"><a>USD</a></li>
+                                        <li @click="setCurrency('EUR')"><a>EUR</a></li>
+                                        <li @click="setCurrency('PLN')"><a>PLN</a></li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-action">
+                            <form method="dialog" class="space-x-2">
+                                <button class="btn w-32" @click="resetModal()">Close</button>
+                                <button class="btn btn-accent w-32" @click="resetModal()">
+                                    Add
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </dialog>
             </div>
         </div>
     </TabLayout>
@@ -79,4 +135,41 @@
 <script setup lang="ts">
 import TabLayout from '@/components/Tab/TabLayout.vue'
 import TabTitle from '@/components/Tab/TabTitle.vue'
+
+import { ref, watch } from 'vue'
+
+const name = ref<string>('')
+const balance = ref<string>('')
+const currency = ref<string>('USD')
+
+const resetModal = () => {
+    setTimeout(() => {
+        name.value = ''
+        balance.value = ''
+        currency.value = 'USD'
+    }, 1000)
+}
+
+const setCurrency = (newCurrency: string) => {
+    currency.value = newCurrency
+}
+
+const formatBalance = () => {
+    let value = balance.value.replace(/[^\d,]/g, '')
+
+    const commaIndex = value.indexOf(',')
+    console.log(commaIndex)
+    if (commaIndex !== -1) {
+        value = value.slice(0, commaIndex + 1) + value.slice(commaIndex + 1).replace(/,/g, '')
+    }
+
+    const parts = value.split(',')
+    if (parts[1] && parts[1].length > 2) {
+        parts[1] = parts[1].slice(0, 2)
+    }
+
+    balance.value = parts.join(',')
+}
+
+watch(balance, formatBalance)
 </script>

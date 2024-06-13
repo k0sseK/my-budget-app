@@ -152,10 +152,10 @@ import { login } from '../../services/authService'
 const emit = defineEmits(['handleForm'])
 const router = useRouter()
 
-const username = ref('')
-const password = ref('')
-const remember = ref(false)
-const message = ref('')
+const username = ref<string>('')
+const password = ref<string>('')
+const remember = ref<boolean>(false)
+const message = ref<string>('')
 const messageType = ref<'success' | 'error'>('success')
 
 const loading = ref(false)
