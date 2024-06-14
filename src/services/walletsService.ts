@@ -1,10 +1,13 @@
+/* eslint-disable no-useless-catch */
 import axios from 'axios'
 
-const API_URL = 'http://localhost:3000/api/wallet'
+const API_URL = 'http://localhost:3000/api/wallets'
 
-export const add = async (name: string, balance: number, currency: string) => {
+export const add = async (name: string, balance: string, currency: string) => {
     try {
+        const token = localStorage.getItem('token')
         const response = await axios.post(`${API_URL}/add`, {
+            token,
             name,
             balance,
             currency

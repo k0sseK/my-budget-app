@@ -1,5 +1,7 @@
 import { RowDataPacket, FieldPacket } from 'mysql2'
 import { db } from '../config'
+import { secretKey } from '../config'
+import jwt from 'jsonwebtoken'
 
 export interface User {
     id?: number
@@ -35,6 +37,16 @@ export const createUser = async (user: User) => {
     return {
         id: (rows as any).insertId,
         ...user
+    }
+}
+
+export const findUserByToken = async (token: string): Promise<User | null> => {
+    try {
+        const decoded = jwt.verify(token, secretKey)
+        return decoded as User
+    } catch (err: any) {
+        console.error('Invalid token:', err.message)
+        return null
     }
 }
 

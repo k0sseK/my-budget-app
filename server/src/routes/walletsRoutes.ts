@@ -1,5 +1,5 @@
 import { Router } from 'express'
-import { add } from '../controllers/walletController'
+import { add } from '../controllers/walletsController'
 
 const router = Router()
 

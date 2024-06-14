@@ -120,7 +120,11 @@
                         <div class="modal-action">
                             <form method="dialog" class="space-x-2">
                                 <button class="btn w-32" @click="resetModal()">Close</button>
-                                <button class="btn btn-accent w-32" @click="resetModal()">
+                                <button
+                                    class="btn btn-accent w-32"
+                                    :class="{ 'btn-disabled': !name || !balance }"
+                                    @click="resetModal(), addWallet()"
+                                >
                                     Add
                                 </button>
                             </form>
@@ -133,10 +137,11 @@
 </template>
 
 <script setup lang="ts">
+import { ref, watch } from 'vue'
+import { add } from '../services/walletsService'
+
 import TabLayout from '@/components/Tab/TabLayout.vue'
 import TabTitle from '@/components/Tab/TabTitle.vue'
-
-import { ref, watch } from 'vue'
 
 const name = ref<string>('')
 const balance = ref<string>('')
@@ -150,6 +155,15 @@ const resetModal = () => {
     }, 1000)
 }
 
+const addWallet = async () => {
+    try {
+        const response = await add(name.value, balance.value, currency.value)
+        console.log(response)
+    } catch (error: any) {
+        console.error('Error adding wallet:', error)
+    }
+}
+
 const setCurrency = (newCurrency: string) => {
     currency.value = newCurrency
 }
@@ -158,7 +172,6 @@ const formatBalance = () => {
     let value = balance.value.replace(/[^\d,]/g, '')
 
     const commaIndex = value.indexOf(',')
-    console.log(commaIndex)
     if (commaIndex !== -1) {
         value = value.slice(0, commaIndex + 1) + value.slice(commaIndex + 1).replace(/,/g, '')
     }
