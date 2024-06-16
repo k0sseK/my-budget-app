@@ -6,7 +6,7 @@
         />
         <div data-aos="fade-up" class="flex space-x-6">
             <div
-                class="flex-1 h-[36rem] shadow bg-base-100 rounded-[15px] px-6 py-4 space-y-5 relative"
+                class="flex-1 h-[40rem] shadow bg-base-100 rounded-[15px] px-6 py-4 space-y-5 relative"
             >
                 <p class="stat-title text-base">Bank accounts</p>
                 <div class="space-y-4">
@@ -33,25 +33,17 @@
                 </div>
             </div>
             <div
-                class="flex-1 h-[36rem] shadow bg-base-100 rounded-[15px] px-6 py-4 space-y-5 relative"
+                class="flex-1 h-[40rem] shadow bg-base-100 rounded-[15px] px-6 py-4 space-y-5 relative"
             >
                 <p class="stat-title text-base">Virtual Wallets</p>
-                <div class="space-y-4">
-                    <button class="flex justify-between btn btn-neutral w-full">
-                        <span>Test Wallet</span>
-                        <span>$20</span>
-                    </button>
-                    <button class="flex justify-between btn btn-neutral w-full">
-                        <span>Property Wallet</span>
-                        <span>$1,120</span>
-                    </button>
-                    <button class="flex justify-between btn btn-neutral w-full">
-                        <span>Test Wallet</span>
-                        <span>$3,213</span>
-                    </button>
-                    <button class="flex justify-between btn btn-neutral w-full">
-                        <span>Test Wallet</span>
-                        <span>$223</span>
+                <div class="space-y-4 h-5/6 overflow-y-scroll overflow-x-hidden">
+                    <button
+                        class="flex justify-between btn btn-neutral w-full"
+                        v-for="wallet in wallets"
+                        :key="wallet.id"
+                    >
+                        <span>{{ wallet.name }}</span>
+                        <span>${{ wallet.balance }}</span>
                     </button>
                 </div>
                 <div
@@ -104,15 +96,19 @@
                                         role="button"
                                         class="w-20 btn btn-active btn-ghost"
                                     >
-                                        {{ currency }}
+                                        {{ currencies[0].code }}
                                     </div>
                                     <ul
                                         tabindex="0"
                                         class="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-52"
                                     >
-                                        <li @click="setCurrency('USD')"><a>USD</a></li>
-                                        <li @click="setCurrency('EUR')"><a>EUR</a></li>
-                                        <li @click="setCurrency('PLN')"><a>PLN</a></li>
+                                        <li
+                                            v-for="curr in currencies"
+                                            :key="curr.code"
+                                            @click="setCurrency(curr.code)"
+                                        >
+                                            <a>{{ curr.code }}</a>
+                                        </li>
                                     </ul>
                                 </div>
                             </div>
@@ -123,7 +119,7 @@
                                 <button
                                     class="btn btn-accent w-32"
                                     :class="{ 'btn-disabled': !name || !balance }"
-                                    @click="resetModal(), addWallet()"
+                                    @click="resetModal(), addVirtualWallet()"
                                 >
                                     Add
                                 </button>
@@ -137,11 +133,22 @@
 </template>
 
 <script setup lang="ts">
-import { ref, watch } from 'vue'
-import { add } from '../services/walletsService'
+import { ref, watch, onMounted } from 'vue'
+import { addWallet, getUserWallets } from '../services/walletsService'
 
 import TabLayout from '@/components/Tab/TabLayout.vue'
 import TabTitle from '@/components/Tab/TabTitle.vue'
+
+import currencies from '@/config/currencies'
+
+interface Wallet {
+    id: number
+    name: string
+    balance: number
+    currency: string
+}
+
+const wallets = ref<Wallet[] | null>(null)
 
 const name = ref<string>('')
 const balance = ref<string>('')
@@ -155,10 +162,9 @@ const resetModal = () => {
     }, 1000)
 }
 
-const addWallet = async () => {
+const addVirtualWallet = async () => {
     try {
-        const response = await add(name.value, balance.value, currency.value)
-        console.log(response)
+        await addWallet(name.value, balance.value, currency.value)
     } catch (error: any) {
         console.error('Error adding wallet:', error)
     }
@@ -184,5 +190,14 @@ const formatBalance = () => {
     balance.value = parts.join(',')
 }
 
+const fetchUserWallets = async () => {
+    try {
+        wallets.value = await getUserWallets()
+    } catch (err: any) {
+        console.log(err)
+    }
+}
+
+onMounted(fetchUserWallets)
 watch(balance, formatBalance)
 </script>

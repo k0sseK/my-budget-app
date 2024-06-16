@@ -1,3 +1,4 @@
+import { RowDataPacket } from 'mysql2'
 import { db } from '../config'
 
 export interface Wallet {
@@ -20,4 +21,17 @@ export const createWallet = async (wallet: Wallet) => {
         id: (rows as any).insertId,
         ...wallet
     }
+}
+
+export const findUserWallets = async (user: any) => {
+    const [wallets] = await db.execute<RowDataPacket[]>(
+        'SELECT id, name, balance, currency FROM wallets WHERE user_id = ?',
+        [user.id]
+    )
+    console.log(wallets)
+    if (wallets.length > 0) {
+        return wallets
+    }
+
+    return null
 }
