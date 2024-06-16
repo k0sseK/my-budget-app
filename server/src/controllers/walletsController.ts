@@ -25,7 +25,7 @@ export const add = async (req: Request, res: Response) => {
     }
 }
 
-export const getUserWallets = async (req: Request, res: Response, next: NextFunction) => {
+export const getUserWallets = async (req: Request, res: Response) => {
     const token = req.query.token as string
 
     const user = await findUserByToken(token)

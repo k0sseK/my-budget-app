@@ -28,7 +28,7 @@ export const findUserWallets = async (user: any) => {
         'SELECT id, name, balance, currency FROM wallets WHERE user_id = ?',
         [user.id]
     )
-    console.log(wallets)
+
     if (wallets.length > 0) {
         return wallets
     }
