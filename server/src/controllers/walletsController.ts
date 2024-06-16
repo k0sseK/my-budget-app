@@ -18,8 +18,8 @@ export const add = async (req: Request, res: Response) => {
     }
 
     try {
-        await createWallet(newWallet)
-        res.status(201)
+        const wallet = await createWallet(newWallet)
+        res.status(201).json(wallet)
     } catch (error: any) {
         res.status(400).json({ message: error.message })
     }

@@ -43,7 +43,9 @@
                         :key="wallet.id"
                     >
                         <span>{{ wallet.name }}</span>
-                        <span>${{ wallet.balance }}</span>
+                        <span>{{
+                            getCurrencySymbol(wallet.currency) + formatter.format(wallet.balance)
+                        }}</span>
                     </button>
                 </div>
                 <div
@@ -154,6 +156,11 @@ const name = ref<string>('')
 const balance = ref<string>('')
 const currency = ref<string>('USD')
 
+const formatter = new Intl.NumberFormat('fr-FR', {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2
+})
+
 const resetModal = () => {
     setTimeout(() => {
         name.value = ''
@@ -162,9 +169,18 @@ const resetModal = () => {
     }, 1000)
 }
 
+const fetchUserWallets = async () => {
+    try {
+        wallets.value = await getUserWallets()
+    } catch (err: any) {
+        console.log(err)
+    }
+}
+
 const addVirtualWallet = async () => {
     try {
         await addWallet(name.value, balance.value, currency.value)
+        fetchUserWallets()
     } catch (error: any) {
         console.error('Error adding wallet:', error)
     }
@@ -190,12 +206,9 @@ const formatBalance = () => {
     balance.value = parts.join(',')
 }
 
-const fetchUserWallets = async () => {
-    try {
-        wallets.value = await getUserWallets()
-    } catch (err: any) {
-        console.log(err)
-    }
+const getCurrencySymbol = (code: string) => {
+    const found = currencies.find((data: { code: string }) => data.code === code)
+    return found ? found.symbol : ''
 }
 
 onMounted(fetchUserWallets)
