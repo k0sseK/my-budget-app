@@ -1,9 +1,6 @@
 <template>
     <TabLayout>
-        <TabTitle
-            title="Transactions"
-            description="Here you can check history of your all transactions."
-        />
+        <TabTitle title="Budgets" description="Plan your budget for the coming months." />
     </TabLayout>
 </template>
 

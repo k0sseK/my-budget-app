@@ -31,6 +31,12 @@ const router = createRouter({
             component: () => import('@/views/WalletsView.vue')
         },
         {
+            path: '/budgets',
+            name: 'Budgets',
+            meta: { verifyAuth: true },
+            component: () => import('@/views/BudgetsView.vue')
+        },
+        {
             path: '/:pathMatch(.*)*',
             name: 'NotFound',
             component: () => import('@/views/NotFoundView.vue')
