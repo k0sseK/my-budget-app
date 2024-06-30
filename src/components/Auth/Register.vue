@@ -213,7 +213,8 @@ const registerUser = async () => {
         loading.value = false
 
         messageType.value = 'error'
-        message.value = error.response.data.message || 'Error registering user'
+        message.value = 'Error registering user'
+        console.error(error.response.data.message)
     }
 }
 </script>

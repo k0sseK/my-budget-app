@@ -17,7 +17,7 @@ export const register = async (req: Request, res: Response) => {
     try {
         const user = await createUser(newUser)
         const token = jwt.sign(
-            { id: user.id, username: user.username, email: user.email },
+            { id: user.id, uuid: user.uuid, username: user.username, email: user.email },
             secretKey,
             {
                 expiresIn: '3h'
@@ -43,8 +43,12 @@ export const login = async (req: Request, res: Response) => {
         return res.status(400).json({ message: 'Invalid password' })
     }
 
-    const token = jwt.sign({ id: user.id, username: user.username, email: user.email }, secretKey, {
-        expiresIn: '3h'
-    })
+    const token = jwt.sign(
+        { id: user.id, uuid: user.uuid, username: user.username, email: user.email },
+        secretKey,
+        {
+            expiresIn: '3h'
+        }
+    )
     res.json({ token })
 }

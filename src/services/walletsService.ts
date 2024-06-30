@@ -6,12 +6,17 @@ const API_URL = 'http://localhost:3000/api/wallets'
 export const addWallet = async (name: string, balance: string, currency: string) => {
     try {
         const token = localStorage.getItem('token')
-        const response = await axios.post(`${API_URL}/add`, {
-            token,
-            name,
-            balance,
-            currency
-        })
+        const response = await axios.post(
+            `${API_URL}/add`,
+            {
+                name,
+                balance,
+                currency
+            },
+            {
+                headers: { Authorization: `Bearer ${token}` }
+            }
+        )
 
         return response.data
     } catch (error) {
@@ -23,7 +28,7 @@ export const getUserWallets = async () => {
     try {
         const token = localStorage.getItem('token')
         const response = await axios.get(`${API_URL}/getUserWallets`, {
-            params: { token }
+            headers: { Authorization: `Bearer ${token}` }
         })
 
         return response.data

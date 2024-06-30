@@ -1,24 +1,33 @@
 import { RowDataPacket, FieldPacket } from 'mysql2'
 import { db } from '../config'
 import { secretKey } from '../config'
+import { generateUniqueId } from '../utils/generateUniqueId'
 import jwt from 'jsonwebtoken'
 
 export interface User {
     id?: number
+    uuid?: string
     username: string
     email: string
     password: string
 }
 
 export const createUser = async (user: User) => {
+    const newUser = {
+        uuid: generateUniqueId(),
+        ...user
+    }
+
+    console.log(newUser)
+
     const [existingUsers] = await db.query<RowDataPacket[]>(
         'SELECT username, email FROM users WHERE username = ? OR email = ?',
-        [user.username, user.email]
+        [newUser.username, newUser.email]
     )
 
     if (existingUsers.length > 0) {
-        const isUsernameTaken = existingUsers.some((u: any) => u.username === user.username)
-        const isEmailTaken = existingUsers.some((u: any) => u.email === user.email)
+        const isUsernameTaken = existingUsers.some((u: any) => u.username === newUser.username)
+        const isEmailTaken = existingUsers.some((u: any) => u.email === newUser.email)
 
         if (isUsernameTaken && isEmailTaken) {
             throw new Error('Username and email are already taken')
@@ -30,13 +39,13 @@ export const createUser = async (user: User) => {
     }
 
     const [rows] = await db.query(
-        'INSERT INTO users (username, email, password) VALUES (?, ?, ?)',
-        [user.username, user.email, user.password]
+        'INSERT INTO users (uuid, username, email, password) VALUES (?, ?, ?, ?)',
+        [newUser.uuid, newUser.username, newUser.email, newUser.password]
     )
 
     return {
         id: (rows as any).insertId,
-        ...user
+        ...newUser
     }
 }
 

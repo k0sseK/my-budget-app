@@ -1,9 +1,10 @@
-import { Request, Response, NextFunction } from 'express'
+import { Request, Response } from 'express'
 import { findUserByToken } from '../models/userModel'
 import { Wallet, createWallet, findUserWallets } from '../models/walletsModel'
 
 export const add = async (req: Request, res: Response) => {
-    const { token, name, balance, currency } = req.body
+    const token = req.header('Authorization')?.split(' ')[1] ?? ''
+    const { name, balance, currency } = req.body
 
     const user = await findUserByToken(token)
     if (!user) {
@@ -26,7 +27,7 @@ export const add = async (req: Request, res: Response) => {
 }
 
 export const getUserWallets = async (req: Request, res: Response) => {
-    const token = req.query.token as string
+    const token = req.header('Authorization')?.split(' ')[1] ?? ''
 
     const user = await findUserByToken(token)
     if (!user) {

@@ -42,7 +42,7 @@ export const verifyToken = async () => {
             }
         })
 
-        return response.data
+        return response.status === 200
     } catch (error) {
         throw error
     }

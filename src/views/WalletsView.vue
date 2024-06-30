@@ -5,7 +5,7 @@
             description="Connect accounts from your bank or create virtual wallets to manage them in the manager."
         />
         <div data-aos="fade-up" class="flex space-x-6">
-            <div
+            <!-- <div
                 class="flex-1 h-[40rem] shadow bg-base-100 rounded-[15px] px-6 py-4 space-y-5 relative"
             >
                 <p class="stat-title text-base">Bank accounts</p>
@@ -31,7 +31,7 @@
                         ></path>
                     </svg>
                 </div>
-            </div>
+            </div> -->
             <div
                 class="flex-1 h-[40rem] shadow bg-base-100 rounded-[15px] px-6 py-4 space-y-5 relative"
             >
@@ -137,6 +137,8 @@
 <script setup lang="ts">
 import { ref, watch, onMounted } from 'vue'
 import { addWallet, getUserWallets } from '../services/walletsService'
+import { createLinkToken, exchangePublicToken } from '../services/plaidService'
+import { usePlaidLink, PlaidLinkOptions } from '@jcss/vue-plaid-link'
 
 import TabLayout from '@/components/Tab/TabLayout.vue'
 import TabTitle from '@/components/Tab/TabTitle.vue'
